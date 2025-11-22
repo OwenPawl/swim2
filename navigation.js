@@ -27,14 +27,13 @@ window.load = function(file, scriptFile, clickedNavElement) {
 
           const script = document.createElement("script");
           script.src = scriptFile;
-          // Use a slight timeout if needed, but usually appending is enough
+          // Append to body and run
           document.body.appendChild(script);
         }
       }
     })
     .catch(err => {
       console.error("Nav Error:", err);
-      // Optional: Show error on screen so you aren't stuck on "Loading..."
       const app = document.getElementById("app");
       if(app) app.innerHTML = `<div style="text-align:center; padding:20px; color:#850000;">
         <h3>Error Loading View</h3>
@@ -48,8 +47,8 @@ window.load = function(file, scriptFile, clickedNavElement) {
 document.addEventListener("DOMContentLoaded", () => {
   const firstTab = document.querySelector('.nav-item');
   if (firstTab) {
-    // NOTE: Ensure 'schedule.html' and 'table_populator.js' exist in your folder!
-    // If not, change this to 'attendance.html' and 'attendance.js'
+    // Default to schedule. If you don't have schedule.html yet, 
+    // this will error unless you change it to attendance.html
     window.load("schedule.html", "table_populator.js", firstTab);
   }
 });
