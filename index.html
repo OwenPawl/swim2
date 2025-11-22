@@ -19,7 +19,7 @@
       --card: #ffffff;
       --shadow: 0 10px 30px rgba(0, 59, 92, 0.12);
       --radius-lg: 18px;
-      --nav-height: 80px; /* Space for bottom bar */
+      --nav-height: 80px;
     }
 
     * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -33,7 +33,7 @@
       display: flex;
       justify-content: center;
       padding: 0; 
-      padding-bottom: calc(var(--nav-height) + 20px); /* Safe area for scrolling */
+      padding-bottom: calc(var(--nav-height) + 20px);
     }
 
     .app-shell {
@@ -43,7 +43,6 @@
       position: relative;
     }
 
-    /* --- Top Bar --- */
     .top-bar {
       position: sticky;
       top: 0;
@@ -93,7 +92,6 @@
     }
     .icon-btn:active { transform: scale(0.95); }
 
-    /* --- Main Content --- */
     .content-card {
       padding: 14px 16px;
       animation: fadeIn 0.3s ease;
@@ -104,7 +102,6 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
-    /* --- Shared Component Styles --- */
     .screen-header {
       display: flex;
       align-items: center;
@@ -146,7 +143,6 @@
     
     .data-table tr:last-child td { border-bottom: none; }
 
-    /* --- Check In Buttons --- */
     .checkIn {
       width: 100%;
       min-width: 85px;
@@ -161,7 +157,6 @@
     }
     .checkIn:active { transform: scale(0.96); }
 
-    /* --- Bottom Navigation --- */
     .bottom-nav {
       position: fixed;
       bottom: 0;
@@ -193,11 +188,9 @@
 
     .nav-item i { font-size: 24px; transition: transform 0.2s; }
     .nav-item span { font-size: 11px; font-weight: 700; }
-
     .nav-item.active { color: var(--blue); }
     .nav-item.active i { transform: translateY(-2px); }
 
-    /* --- Sticky Actions (Submit/Reset) --- */
     .floating-actions {
       position: fixed;
       bottom: calc(var(--nav-height) + 12px); 
@@ -233,8 +226,6 @@
   <script src="initialize_access.js"></script>
 <body>
   <div class="app-shell">
-    
-    <!-- Top Header -->
     <header class="top-bar">
       <div class="date-controls">
         <button class="icon-btn" id="prevDate" aria-label="Previous day"><i class="ph ph-caret-left"></i></button>
@@ -243,12 +234,10 @@
       </div>
     </header>
 
-    <!-- Content Area -->
     <main id="app" class="content-card">
-       <!-- Views are injected here -->
+       <h1 class="muted" style="text-align:center; margin-top:50px;">Loading...</h1>
     </main>
 
-    <!-- Bottom Navigation Bar -->
     <nav class="bottom-nav">
       <button class="nav-item active" onclick="load('schedule.html','table_populator.js', this)">
         <i class="ph-fill ph-calendar-blank"></i>
@@ -265,10 +254,8 @@
         <span>Notes</span>
       </button>
     </nav>
-
   </div>
 
-  <!-- Global Logic -->
   <script defer>
     function changeDate(days) {
       const dateField = document.getElementById("dateInput");
@@ -283,7 +270,10 @@
     document.getElementById("prevDate").addEventListener("click", () => changeDate(-1));
     document.getElementById("nextDate").addEventListener("click", () => changeDate(1));
   </script>
+  
+  <!-- IMPT: Load Data Fetcher Globally -->
+  <script src="getdata.js" defer></script>
   <!-- Load navigation last to ensure DOM is ready -->
-  <script src="navigation.js"></script>
+  <script src="navigation.js" defer></script>
 </body>
 </html>
