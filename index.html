@@ -4,7 +4,7 @@
   <title>Lesson Manager</title>
   <link rel="apple-touch-icon" href="Swimming Person Icon.PNG">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
-  <!-- Import Icons -->
+  <!-- Import Phosphor Icons -->
   <script src="https://unpkg.com/@phosphor-icons/web"></script>
   <style>
     @import url("https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800&display=swap");
@@ -34,7 +34,7 @@
       display: flex;
       justify-content: center;
       padding: 0; 
-      /* Increased padding to account for Nav + Floating Actions + Spacing so table end is visible */
+      /* Extra padding at bottom so content isn't hidden by nav/buttons */
       padding-bottom: calc(var(--nav-height) + var(--action-height) + 40px);
     }
 
@@ -45,6 +45,7 @@
       position: relative;
     }
 
+    /* --- Header --- */
     .top-bar {
       position: sticky;
       top: 0;
@@ -104,6 +105,7 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
+    /* --- Headers & Pills --- */
     .screen-header {
       display: flex;
       align-items: center;
@@ -128,6 +130,7 @@
       margin-bottom: 4px;
     }
 
+    /* --- Table Styling --- */
     .data-table {
       width: 100%;
       border-collapse: collapse;
@@ -135,7 +138,7 @@
       border-radius: 16px;
       overflow: hidden;
       box-shadow: 0 4px 20px rgba(0,0,0,0.04);
-      table-layout: fixed; /* Ensures columns respect widths and text truncates */
+      table-layout: fixed; /* CRITICAL: Forces columns to respect width for ellipsis */
     }
 
     .data-table th, .data-table td {
@@ -147,35 +150,32 @@
     
     .data-table tr:last-child td { border-bottom: none; }
 
-    /* Enforce single line text for names */
-    .text, .data-table td {
+    /* Name Truncation Logic */
+    .name-col {
+      width: 35%; /* Adjust based on preference */
+      font-weight: 800;
+      color: var(--blue);
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
-    
-    /* Allow buttons to overflow if needed, or handle differently */
-    .data-table td:has(button) {
-      overflow: visible;
-      white-space: normal;
-    }
 
-    /* Check In Button Styles */
+    /* --- Buttons in Table --- */
     .checkIn {
       width: 100%;
-      min-width: 80px;
-      padding: 8px;
+      padding: 10px 6px;
       font-weight: 700;
       border-radius: 8px;
       border: none;
       color: white;
-      font-size: 13px;
+      font-size: 12px;
       transition: transform 0.1s;
       cursor: pointer;
-      margin-bottom: 4px; /* Space if they stack */
+      white-space: nowrap;
     }
     .checkIn:active { transform: scale(0.96); }
 
+    /* --- Bottom Nav --- */
     .bottom-nav {
       position: fixed;
       bottom: 0;
@@ -210,6 +210,7 @@
     .nav-item.active { color: var(--blue); }
     .nav-item.active i { transform: translateY(-2px); }
 
+    /* --- Sticky Actions (Submit/Reset) --- */
     .floating-actions {
       position: fixed;
       bottom: calc(var(--nav-height) + 12px); 
@@ -219,7 +220,6 @@
       display: flex;
       gap: 10px;
       z-index: 400;
-      /* removed animation for stability */
     }
 
     .action-btn {
@@ -253,7 +253,8 @@
     </main>
 
     <nav class="bottom-nav">
-      <button class="nav-item active" onclick="load('schedule.html','table_populator.js', this)">
+      <!-- NOTE: We are now loading schedule.html and schedule.js -->
+      <button class="nav-item active" onclick="load('schedule.html','schedule.js', this)">
         <i class="ph-fill ph-calendar-blank"></i>
         <span>Schedule</span>
       </button>
@@ -262,8 +263,6 @@
         <i class="ph-fill ph-check-circle"></i>
         <span>Attend</span>
       </button>
-      
-      <!-- Notes tab removed as requested -->
     </nav>
   </div>
 
