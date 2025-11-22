@@ -1,4 +1,4 @@
-// We attach 'load' to the window object to ensure it is globally available
+// Global load function
 window.load = function(file, scriptFile, clickedNavElement) {
   
   // 1. Visual Feedback
@@ -10,9 +10,7 @@ window.load = function(file, scriptFile, clickedNavElement) {
   // 2. Fetch Content
   fetch(file)
     .then(response => {
-      if (!response.ok) {
-        throw new Error(`Failed to load ${file} - Status: ${response.status}`);
-      }
+      if (!response.ok) throw new Error(response.statusText);
       return response.text();
     })
     .then(html => {
@@ -22,33 +20,24 @@ window.load = function(file, scriptFile, clickedNavElement) {
         
         // 3. Handle Scripts
         if (scriptFile) {
+          // Cleanup old scripts to prevent duplicate listeners
           const oldScript = document.querySelector(`script[src="${scriptFile}"]`);
           if (oldScript) oldScript.remove();
 
           const script = document.createElement("script");
           script.src = scriptFile;
-          // Append to body and run
           document.body.appendChild(script);
         }
       }
     })
-    .catch(err => {
-      console.error("Nav Error:", err);
-      const app = document.getElementById("app");
-      if(app) app.innerHTML = `<div style="text-align:center; padding:20px; color:#850000;">
-        <h3>Error Loading View</h3>
-        <p>Could not load <strong>${file}</strong>.</p>
-        <p>Check console for details.</p>
-      </div>`;
-    });
+    .catch(err => console.error("Nav Error:", err));
 };
 
 // Initial Load
 document.addEventListener("DOMContentLoaded", () => {
   const firstTab = document.querySelector('.nav-item');
   if (firstTab) {
-    // Default to schedule. If you don't have schedule.html yet, 
-    // this will error unless you change it to attendance.html
-    window.load("schedule.html", "table_populator.js", firstTab);
+    // IMPORTANT: Make sure you have created schedule.html and schedule.js!
+    window.load("schedule.html", "schedule.js", firstTab);
   }
 });
