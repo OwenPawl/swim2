@@ -3,9 +3,11 @@
 <head>
   <title>Lesson Manager</title>
   <link rel="apple-touch-icon" href="Swimming Person Icon.PNG">
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <!-- Import Icons -->
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
   <style>
-    @import url("https://fonts.googleapis.com/css2?family=Nunito:wght@600;700&display=swap");
+    @import url("https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800&display=swap");
 
     :root {
       --blue: #007bb4;
@@ -17,34 +19,40 @@
       --card: #ffffff;
       --shadow: 0 10px 30px rgba(0, 59, 92, 0.12);
       --radius-lg: 18px;
+      --nav-height: 80px; /* Space for bottom bar */
     }
 
-    * { box-sizing: border-box; }
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
     body {
       margin: 0;
-      background: radial-gradient(circle at 10% 10%, rgba(0, 123, 180, 0.08), transparent 35%),
-                  radial-gradient(circle at 90% 0%, rgba(0, 131, 61, 0.08), transparent 35%),
-                  #e9f5ff;
+      background: #e9f5ff;
       color: var(--ink);
-      font-family: "Nunito", "Arial", "Helvetica", sans-serif;
+      font-family: "Nunito", "Arial", sans-serif;
       min-height: 100vh;
       display: flex;
       justify-content: center;
-      padding: 12px;
+      padding: 0; 
+      padding-bottom: calc(var(--nav-height) + 20px); /* Safe area for scrolling */
     }
 
     .app-shell {
       width: min(960px, 100%);
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      position: relative;
     }
 
+    /* --- Top Bar --- */
     .top-bar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
       display: flex;
       justify-content: center;
-      padding: 8px 10px;
+      padding: 12px 10px;
+      background: rgba(233, 245, 255, 0.95);
+      backdrop-filter: blur(10px);
     }
 
     .date-controls {
@@ -52,189 +60,215 @@
       align-items: center;
       gap: 8px;
       background: var(--card);
-      box-shadow: var(--shadow);
+      box-shadow: 0 4px 12px rgba(0, 59, 92, 0.1);
       border-radius: 999px;
-      padding: 10px 12px;
+      padding: 6px 8px;
     }
 
     .date-input {
       border: none;
-      font-size: 17px;
+      font-size: 16px;
       font-weight: 700;
       color: var(--ink);
-      padding: 8px 10px;
-      border-radius: 12px;
-      background: #f0f6fb;
+      padding: 8px;
+      border-radius: 8px;
+      background: transparent;
       outline: none;
+      text-align: center;
     }
 
     .icon-btn {
-      width: 42px;
-      height: 42px;
+      width: 36px;
+      height: 36px;
       border-radius: 50%;
       border: none;
       background: var(--blue);
       color: white;
       font-size: 18px;
-      font-weight: 700;
-      box-shadow: 0 6px 18px rgba(0, 123, 180, 0.25);
-      transition: transform 150ms ease, box-shadow 150ms ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 10px rgba(0, 123, 180, 0.3);
+      transition: transform 0.1s;
     }
+    .icon-btn:active { transform: scale(0.95); }
 
-    .icon-btn:active { transform: translateY(1px) scale(0.98); }
-
+    /* --- Main Content --- */
     .content-card {
-      background: var(--card);
-      box-shadow: var(--shadow);
-      border-radius: var(--radius-lg);
       padding: 14px 16px;
-      min-height: 60vh;
+      animation: fadeIn 0.3s ease;
     }
 
-    /* Shared styles for loaded screens */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(5px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* --- Shared Component Styles --- */
     .screen-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 8px;
-      margin-bottom: 12px;
+      margin-bottom: 16px;
     }
 
-    .screen-title {
-      font-size: 22px;
-      font-weight: 800;
-      margin: 0;
-      color: var(--ink);
-    }
+    .screen-title { font-size: 24px; font-weight: 800; margin: 0; color: var(--ink); }
 
     .pill {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
-      padding: 8px 12px;
-      border-radius: 999px;
-      background: #eef6fc;
+      padding: 6px 10px;
+      border-radius: 6px;
+      background: rgba(0, 123, 180, 0.1);
       color: var(--blue);
       font-weight: 700;
-      font-size: 13px;
-    }
-
-    .cta,
-    .ghost {
-      width: 100%;
-      border: none;
-      border-radius: 14px;
-      padding: 14px 16px;
-      font-size: 16px;
-      font-weight: 800;
-      cursor: pointer;
-      transition: transform 150ms ease, box-shadow 150ms ease, background 150ms ease;
-    }
-
-    .cta {
-      background: linear-gradient(145deg, var(--blue), var(--blue-strong));
-      color: #fff;
-      box-shadow: 0 14px 30px rgba(0, 123, 180, 0.35);
-    }
-
-    .ghost {
-      background: #f0f6fb;
-      color: var(--blue-strong);
-      border: 1px solid rgba(0, 123, 180, 0.2);
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
-    }
-
-    .cta:active,
-    .ghost:active {
-      transform: translateY(1px) scale(0.995);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 4px;
     }
 
     .data-table {
       width: 100%;
       border-collapse: collapse;
-      background: #f9fcff;
-      border-radius: 12px;
+      background: var(--card);
+      border-radius: 16px;
       overflow: hidden;
-      box-shadow: inset 0 0 0 1px rgba(0, 123, 180, 0.05);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.04);
     }
 
-    .data-table th,
-    .data-table td {
-      padding: 12px 10px;
+    .data-table th, .data-table td {
+      padding: 14px 12px;
       text-align: left;
-      font-size: 15px;
-      border-bottom: 1px solid rgba(0, 123, 180, 0.08);
+      border-bottom: 1px solid #f0f0f0;
     }
-
-    .data-table tr:last-child th,
+    
     .data-table tr:last-child td { border-bottom: none; }
 
-    .badge-new {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 2px 8px;
-      font-size: 11px;
-      font-weight: 800;
-      color: var(--green);
-      border: 1px solid rgba(0, 131, 61, 0.2);
-      background: rgba(0, 131, 61, 0.08);
-      border-radius: 999px;
-      letter-spacing: 0.5px;
-      text-transform: uppercase;
-    }
-
-    .muted { color: var(--muted); }
-
-    .table-wrapper {
-      background: linear-gradient(180deg, #f5faff, #f0f6fb);
-      border-radius: var(--radius-lg);
-      padding: 8px;
-      box-shadow: inset 0 0 0 1px rgba(0, 123, 180, 0.05);
-      overflow-x: auto;
-    }
-
-    .text {
-      font-weight: 800;
-      color: var(--blue);
-      max-width: calc(100vw - 148px);
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-
+    /* --- Check In Buttons --- */
     .checkIn {
-      width: 94px;
-      height: 46px;
-      white-space: nowrap;
-      font-family: "Nunito", sans-serif;
-      font-size: 15px;
-      font-weight: 800;
-      background: var(--green);
-      color: #fff;
-      margin: 4px;
-      padding: 8px 10px;
-      border-radius: 12px;
+      width: 100%;
+      min-width: 85px;
+      padding: 10px;
+      font-weight: 700;
+      border-radius: 10px;
       border: none;
-      box-shadow: 0 12px 22px rgba(0, 131, 61, 0.25);
-      transition: transform 120ms ease, box-shadow 120ms ease, background 120ms ease;
+      color: white;
+      font-size: 14px;
+      transition: transform 0.1s;
+      cursor: pointer;
+    }
+    .checkIn:active { transform: scale(0.96); }
+
+    /* --- Bottom Navigation --- */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: var(--nav-height);
+      background: var(--card);
+      display: flex;
+      justify-content: space-around;
+      align-items: flex-start;
+      padding-top: 12px;
+      box-shadow: 0 -5px 30px rgba(0,0,0,0.05);
+      z-index: 500;
+      border-top: 1px solid rgba(0,0,0,0.05);
     }
 
-    .checkIn:active { transform: translateY(1px) scale(0.99); }
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      background: none;
+      border: none;
+      color: var(--muted);
+      cursor: pointer;
+      width: 60px;
+      transition: color 0.2s;
+    }
+
+    .nav-item i { font-size: 24px; transition: transform 0.2s; }
+    .nav-item span { font-size: 11px; font-weight: 700; }
+
+    .nav-item.active { color: var(--blue); }
+    .nav-item.active i { transform: translateY(-2px); }
+
+    /* --- Sticky Actions (Submit/Reset) --- */
+    .floating-actions {
+      position: fixed;
+      bottom: calc(var(--nav-height) + 12px); 
+      left: 50%;
+      transform: translateX(-50%);
+      width: min(960px, 94%);
+      display: flex;
+      gap: 10px;
+      z-index: 400;
+      animation: slideUp 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    @keyframes slideUp {
+      from { transform: translate(-50%, 20px); opacity: 0; }
+      to { transform: translate(-50%, 0); opacity: 1; }
+    }
+
+    .action-btn {
+      flex: 1;
+      padding: 14px;
+      border-radius: 14px;
+      border: none;
+      font-size: 16px;
+      font-weight: 800;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+      cursor: pointer;
+    }
+
+    .btn-submit { background: var(--green); color: white; }
+    .btn-reset { background: white; color: var(--ink); border: 1px solid #ddd; }
   </style>
 </head>
   <script src="initialize_access.js"></script>
 <body>
   <div class="app-shell">
+    
+    <!-- Top Header -->
     <header class="top-bar">
       <div class="date-controls">
-        <button class="icon-btn" id="prevDate" aria-label="Previous day">&#8592;</button>
+        <button class="icon-btn" id="prevDate" aria-label="Previous day"><i class="ph ph-caret-left"></i></button>
         <input class="date-input" id="dateInput" type="date">
-        <button class="icon-btn" id="nextDate" aria-label="Next day">&#8594;</button>
+        <button class="icon-btn" id="nextDate" aria-label="Next day"><i class="ph ph-caret-right"></i></button>
       </div>
     </header>
-    <main id="app" class="content-card"><h1 class="muted">Loading...</h1></main>
+
+    <!-- Content Area -->
+    <main id="app" class="content-card">
+       <!-- Views are injected here -->
+    </main>
+
+    <!-- Bottom Navigation Bar -->
+    <nav class="bottom-nav">
+      <button class="nav-item active" onclick="load('schedule.html','table_populator.js', this)">
+        <i class="ph-fill ph-calendar-blank"></i>
+        <span>Schedule</span>
+      </button>
+      
+      <button class="nav-item" onclick="load('attendance.html','attendance.js', this)">
+        <i class="ph-fill ph-check-circle"></i>
+        <span>Attend</span>
+      </button>
+
+      <button class="nav-item" onclick="load('Note.html','note.js', this)">
+        <i class="ph-fill ph-notebook"></i>
+        <span>Notes</span>
+      </button>
+    </nav>
+
   </div>
+
+  <!-- Global Logic -->
   <script defer>
     function changeDate(days) {
       const dateField = document.getElementById("dateInput");
@@ -249,6 +283,7 @@
     document.getElementById("prevDate").addEventListener("click", () => changeDate(-1));
     document.getElementById("nextDate").addEventListener("click", () => changeDate(1));
   </script>
-  <script src="navigation.js" defer></script>
+  <!-- Load navigation last to ensure DOM is ready -->
+  <script src="navigation.js"></script>
 </body>
 </html>
