@@ -20,6 +20,7 @@
       --shadow: 0 10px 30px rgba(0, 59, 92, 0.12);
       --radius-lg: 18px;
       --nav-height: 80px;
+      --action-height: 60px;
     }
 
     * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -33,7 +34,8 @@
       display: flex;
       justify-content: center;
       padding: 0; 
-      padding-bottom: calc(var(--nav-height) + 20px);
+      /* Increased padding to account for Nav + Floating Actions + Spacing so table end is visible */
+      padding-bottom: calc(var(--nav-height) + var(--action-height) + 40px);
     }
 
     .app-shell {
@@ -133,27 +135,44 @@
       border-radius: 16px;
       overflow: hidden;
       box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+      table-layout: fixed; /* Ensures columns respect widths and text truncates */
     }
 
     .data-table th, .data-table td {
       padding: 14px 12px;
       text-align: left;
       border-bottom: 1px solid #f0f0f0;
+      vertical-align: middle;
     }
     
     .data-table tr:last-child td { border-bottom: none; }
 
+    /* Enforce single line text for names */
+    .text, .data-table td {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    
+    /* Allow buttons to overflow if needed, or handle differently */
+    .data-table td:has(button) {
+      overflow: visible;
+      white-space: normal;
+    }
+
+    /* Check In Button Styles */
     .checkIn {
       width: 100%;
-      min-width: 85px;
-      padding: 10px;
+      min-width: 80px;
+      padding: 8px;
       font-weight: 700;
-      border-radius: 10px;
+      border-radius: 8px;
       border: none;
       color: white;
-      font-size: 14px;
+      font-size: 13px;
       transition: transform 0.1s;
       cursor: pointer;
+      margin-bottom: 4px; /* Space if they stack */
     }
     .checkIn:active { transform: scale(0.96); }
 
@@ -200,12 +219,7 @@
       display: flex;
       gap: 10px;
       z-index: 400;
-      animation: slideUp 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    }
-
-    @keyframes slideUp {
-      from { transform: translate(-50%, 20px); opacity: 0; }
-      to { transform: translate(-50%, 0); opacity: 1; }
+      /* removed animation for stability */
     }
 
     .action-btn {
@@ -248,11 +262,8 @@
         <i class="ph-fill ph-check-circle"></i>
         <span>Attend</span>
       </button>
-
-      <button class="nav-item" onclick="load('Note.html','note.js', this)">
-        <i class="ph-fill ph-notebook"></i>
-        <span>Notes</span>
-      </button>
+      
+      <!-- Notes tab removed as requested -->
     </nav>
   </div>
 
@@ -271,9 +282,7 @@
     document.getElementById("nextDate").addEventListener("click", () => changeDate(1));
   </script>
   
-  <!-- IMPT: Load Data Fetcher Globally -->
   <script src="getdata.js" defer></script>
-  <!-- Load navigation last to ensure DOM is ready -->
   <script src="navigation.js" defer></script>
 </body>
 </html>
